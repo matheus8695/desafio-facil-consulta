@@ -2,22 +2,20 @@
 
 namespace Database\Factories;
 
+use App\Models\{Doctor, Patient};
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Appointment>
- */
 class AppointmentFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
     public function definition(): array
     {
+        $doctors  = Doctor::pluck('id')->toArray();
+        $patients = Patient::pluck('id')->toArray();
+
         return [
-            //
+            'doctor_id'  => fake()->randomElement($doctors),
+            'patient_id' => fake()->randomElement($patients),
+            'date'       => fake()->dateTimeBetween('-2 months', '+6 months'),
         ];
     }
 }
