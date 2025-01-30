@@ -8,13 +8,16 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class DoctorController extends Controller
 {
-    public function __invoke(): JsonResource
+    public function index(int $cityId = null): JsonResource
     {
         $doctors = Doctor::query()
             ->when(request()->has('nome'), function ($query) {
                 $query->where('name', 'like', '%' . request('nome') . '%');
             })
-            ->orderByRaw("TRIM(BOTH '.' FROM REGEXP_REPLACE(name, '^Dr(a)?\.\s*', ''))")
+            ->when($cityId, function ($query) use ($cityId) {
+                $query->where('city_id', $cityId);
+            })
+            ->orderByNameWithoutPrefix()
             ->get();
 
         return DoctorResource::collection($doctors);
