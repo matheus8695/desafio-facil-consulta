@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\{Auth, CityController, DoctorController};
+use App\Http\Controllers\{Auth, CityController, DoctorController, PatientController};
 use Illuminate\Support\Facades\Route;
 
 #auth routes
@@ -17,6 +17,12 @@ Route::get('/cidades/{id_cidade}/medicos', [DoctorController::class, 'index']);
 #end
 
 Route::group(['middleware' => 'auth:api'], function () {
+    #auth routes
     Route::post('/logout', [Auth\AuthController::class, 'logout']);
     Route::post('/me', [Auth\AuthController::class, 'me']);
+    #end
+
+    #patient routes
+    Route::get('/medicos/{id_medico}/pacientes', [PatientController::class, 'index']);
+    #end
 });
