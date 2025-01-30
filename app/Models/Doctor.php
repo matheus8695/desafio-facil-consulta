@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\{BelongsTo, HasMany};
-use Illuminate\Database\Eloquent\{Model, SoftDeletes};
+use Illuminate\Database\Eloquent\{Builder, Model, SoftDeletes};
 
 class Doctor extends Model
 {
@@ -25,5 +25,10 @@ class Doctor extends Model
     public function appointments(): HasMany
     {
         return $this->hasMany(Appointment::class);
+    }
+
+    public function scopeOrderByNameWithoutPrefix(Builder $query): Builder
+    {
+        return $query->orderByRaw("TRIM(BOTH '.' FROM REGEXP_REPLACE(name, '^Dr(a)?\.\s*', ''))");
     }
 }

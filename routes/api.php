@@ -1,10 +1,20 @@
 <?php
 
-use App\Http\Controllers\{Auth, CityController};
+use App\Http\Controllers\{Auth, CityController, DoctorController};
 use Illuminate\Support\Facades\Route;
 
+#auth routes
 Route::post('/login', [Auth\AuthController::class, 'login']);
+#end
+
+#city routes
 Route::get('/cidades', CityController::class);
+#end
+
+#doctor routes
+Route::get('/medicos', [DoctorController::class, 'index']);
+Route::get('/cidades/{id_cidade}/medicos', [DoctorController::class, 'index']);
+#end
 
 Route::group(['middleware' => 'auth:api'], function () {
     Route::post('/logout', [Auth\AuthController::class, 'logout']);
