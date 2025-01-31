@@ -34,7 +34,7 @@ class PatientController extends Controller
         return PatientResource::collection($patients);
     }
 
-    public function store(StorePatientRequest $request): JsonResponse
+    public function store(StorePatientRequest $request): JsonResponse|Exception
     {
         try {
             $patient = Patient::query()->create([
@@ -49,7 +49,7 @@ class PatientController extends Controller
         }
     }
 
-    public function update(UpdatePatientRequest $request, Patient $patient): JsonResponse
+    public function update(UpdatePatientRequest $request, Patient $patient): JsonResponse|Exception
     {
         try {
             $patient->name  = $request->nome;
