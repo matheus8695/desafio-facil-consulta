@@ -24,5 +24,6 @@ Route::group(['middleware' => 'auth:api'], function () {
 
     #patient routes
     Route::get('/medicos/{id_medico}/pacientes', [PatientController::class, 'index']);
+    Route::post('/pacientes/{patient}', [PatientController::class, 'update']);
     #end
 });

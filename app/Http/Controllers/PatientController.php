@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UpdatePatientRequest;
 use App\Http\Resources\PatientResource;
 use App\Models\Patient;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Http\{JsonResponse, Request};
 
 class PatientController extends Controller
 {
@@ -40,7 +41,13 @@ class PatientController extends Controller
         //
     }
 
-    public function update(Request $request, int $patientId)
+    public function update(UpdatePatientRequest $request, Patient $patient): JsonResponse
     {
+        $patient->name  = $request->nome;
+        $patient->phone = $request->telefone;
+
+        $patient->update();
+
+        return response()->json($patient);
     }
 }
