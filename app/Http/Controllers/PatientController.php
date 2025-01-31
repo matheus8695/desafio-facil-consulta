@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\{StorePatientRequest, UpdatePatientRequest};
 use App\Http\Resources\PatientResource;
 use App\Models\Patient;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class PatientController extends Controller
@@ -32,15 +34,32 @@ class PatientController extends Controller
         return PatientResource::collection($patients);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(StorePatientRequest $request): JsonResponse|Exception
     {
-        //
+        try {
+            $patient = Patient::query()->create([
+                'name'     => $request->nome,
+                'phone'    => $request->telefone,
+                'document' => $request->cpf,
+            ]);
+
+            return response()->json($patient);
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 
-    public function update(Request $request, int $patientId)
+    public function update(UpdatePatientRequest $request, Patient $patient): JsonResponse|Exception
     {
+        try {
+            $patient->name  = $request->nome;
+            $patient->phone = $request->telefone;
+
+            $patient->update();
+
+            return response()->json($patient);
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 }

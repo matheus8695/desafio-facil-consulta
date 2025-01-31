@@ -17,8 +17,9 @@ class PatientResource extends JsonResource
             'document'     => $patient->document,
             'phone'        => $patient->phone,
             'created_at'   => $patient->created_at->format('Y-m-d H:i:s'),
-            'appointments' => $patient->appointments->map(function ($appointment) {
-                return [
+            'appointments' => $patient->when(
+                $patient->appointments->isNotEmpty(),
+                $patient->appointments->map(fn ($appointment) => [
                     'id'     => $appointment->id,
                     'date'   => $appointment->date,
                     'doctor' => [
@@ -26,8 +27,8 @@ class PatientResource extends JsonResource
                         'name'      => $appointment->doctor->name,
                         'specialty' => $appointment->doctor->specialty,
                     ],
-                ];
-            }),
+                ])
+            ),
         ];
     }
 }
