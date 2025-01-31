@@ -4,20 +4,29 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\PatientResource;
 use App\Models\Patient;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class PatientController extends Controller
 {
-    public function index(int $doctorId)
+    public function index(int $doctorId): JsonResource
     {
+        $scheduledOnly = request()->has('apenas-agendados');
+
         $patients = Patient::query()
-            ->whereHas('appointments', function ($query) use ($doctorId) {
-                $query->where('doctor_id', $doctorId);
-            })
-            ->with(['appointments' => function ($query) use ($doctorId) {
-                $query->where('doctor_id', '=', $doctorId)->orderBy('date');
+            ->join('appointments', 'appointments.patient_id', '=', 'patients.id')
+            ->where('appointments.doctor_id', $doctorId)
+            ->when(
+                $scheduledOnly,
+                fn (Builder $q) => $q->where('appointments.date', '>', Carbon::now())
+            )
+            ->orderBy('appointments.date')
+            ->select('patients.*')
+            ->with(['appointments' => function ($q) use ($doctorId) {
+                $q->where('doctor_id', $doctorId);
             }])
-            ->orderBy('name')
             ->get();
 
         return PatientResource::collection($patients);
@@ -31,27 +40,7 @@ class PatientController extends Controller
         //
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Patient $patient)
+    public function update(Request $request, int $patientId)
     {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Patient $patient)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Patient $patient)
-    {
-        //
     }
 }
