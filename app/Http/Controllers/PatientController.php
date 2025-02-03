@@ -24,11 +24,11 @@ class PatientController extends Controller
                 $scheduledOnly,
                 fn (Builder $q) => $q->where('appointments.date', '>', Carbon::now())
             )
-            ->orderBy('appointments.date')
-            ->select('patients.*')
             ->with(['appointments' => function ($q) use ($doctorId) {
                 $q->where('doctor_id', $doctorId);
             }])
+            ->select('patients.*')
+            ->orderBy('appointments.date')
             ->get();
 
         return PatientResource::collection($patients);
