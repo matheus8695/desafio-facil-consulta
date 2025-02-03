@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\{Auth, CityController, DoctorController, PatientController};
+use App\Http\Controllers\{AppointmentController, Auth, CityController, DoctorController, PatientController};
 use Illuminate\Support\Facades\Route;
 
 #auth routes
@@ -26,5 +26,9 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('/medicos/{id_medico}/pacientes', [PatientController::class, 'index']);
     Route::post('/pacientes/{patient}', [PatientController::class, 'update']);
     Route::post('/pacientes', [PatientController::class, 'store']);
+    #end
+
+    #appointment routes
+    Route::post('/medicos/consulta', [AppointmentController::class, 'index'])->name('appointment.index');
     #end
 });
