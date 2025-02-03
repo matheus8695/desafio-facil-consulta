@@ -29,6 +29,6 @@ Route::group(['middleware' => 'auth:api'], function () {
     #end
 
     #appointment routes
-    Route::post('/medicos/consulta', [AppointmentController::class, 'index'])->name('appointment.index');
+    Route::post('/medicos/consulta', [AppointmentController::class, 'index']);
     #end
 });
