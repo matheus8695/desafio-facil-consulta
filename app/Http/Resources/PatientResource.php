@@ -17,18 +17,7 @@ class PatientResource extends JsonResource
             'document'     => $patient->document,
             'phone'        => $patient->phone,
             'created_at'   => $patient->created_at->format('Y-m-d H:i:s'),
-            'appointments' => $patient->when(
-                $patient->appointments->isNotEmpty(),
-                $patient->appointments->map(fn ($appointment) => [
-                    'id'     => $appointment->id,
-                    'date'   => $appointment->date,
-                    'doctor' => [
-                        'id'        => $appointment->doctor->id,
-                        'name'      => $appointment->doctor->name,
-                        'specialty' => $appointment->doctor->specialty,
-                    ],
-                ])
-            ),
+            'appointments' => AppointmentResource::collection($this->whenLoaded('appointments')),
         ];
     }
 }
