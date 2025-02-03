@@ -26,6 +26,10 @@ class PatientController extends Controller
             ->with(['appointments' => function ($q) use ($doctorId) {
                 $q->where('doctor_id', $doctorId);
             }])
+            ->when(
+                request()->has('nome'),
+                fn (Builder $q) => $q->where('patients.name', 'like', '%' . request('nome') . '%')
+            )
             ->select('patients.*')
             ->orderBy('appointments.date')
             ->get();
