@@ -6,7 +6,6 @@ use App\Http\Requests\{StorePatientRequest, UpdatePatientRequest};
 use App\Http\Resources\PatientResource;
 use App\Models\Patient;
 use Carbon\Carbon;
-use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -34,32 +33,24 @@ class PatientController extends Controller
         return PatientResource::collection($patients);
     }
 
-    public function store(StorePatientRequest $request): JsonResponse|Exception
+    public function store(StorePatientRequest $request): JsonResponse
     {
-        try {
-            $patient = Patient::query()->create([
-                'name'     => $request->nome,
-                'phone'    => $request->telefone,
-                'document' => $request->cpf,
-            ]);
+        $patient = Patient::query()->create([
+            'name'     => $request->nome,
+            'phone'    => $request->telefone,
+            'document' => $request->cpf,
+        ]);
 
-            return response()->json($patient);
-        } catch (Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
-        }
+        return response()->json($patient);
     }
 
-    public function update(UpdatePatientRequest $request, Patient $patient): JsonResponse|Exception
+    public function update(UpdatePatientRequest $request, Patient $patient): JsonResponse
     {
-        try {
-            $patient->name  = $request->nome;
-            $patient->phone = $request->telefone;
+        $patient->update([
+            'name'  => $request->nome,
+            'phone' => $request->telefone,
+        ]);
 
-            $patient->update();
-
-            return response()->json($patient);
-        } catch (Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
-        }
+        return response()->json($patient);
     }
 }
