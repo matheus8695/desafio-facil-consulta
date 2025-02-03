@@ -29,6 +29,6 @@ class Doctor extends Model
 
     public function scopeOrderByNameWithoutPrefix(Builder $query): Builder
     {
-        return $query->orderByRaw("REGEXP_REPLACE(name, '^Dr(a)?\.\s*', '')");
+        return $query->orderByRaw("REGEXP_REPLACE(name, '^Dr(a)?\.\\s?', '')");
     }
 }
